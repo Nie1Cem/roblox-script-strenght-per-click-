@@ -1,4 +1,4 @@
--- PLAYER FEATURE
+-- PLAYER FEATURE (Fixed)
 local Feature = {}
 
 local contentFrame
@@ -12,14 +12,20 @@ local addConnection
 local highlightedPlayers = {}
 local featureConnections = {}
 
+-- ============================================================
+-- FUNGSI HIGHLIGHT
+-- ============================================================
 local function addHighlight(targetPlayer)
     if not targetPlayer or targetPlayer == player then return end
     local character = targetPlayer.Character
     if not character then return end
     
+    -- Remove existing highlight
     if highlightedPlayers[targetPlayer] then
         local oldHighlight = highlightedPlayers[targetPlayer]
-        if oldHighlight and oldHighlight.Parent then return end
+        if oldHighlight and oldHighlight.Parent then 
+            oldHighlight:Destroy()
+        end
         highlightedPlayers[targetPlayer] = nil
     end
     
@@ -36,18 +42,25 @@ end
 local function removeHighlight(targetPlayer)
     if highlightedPlayers[targetPlayer] then
         local highlight = highlightedPlayers[targetPlayer]
-        if highlight then highlight:Destroy() end
+        if highlight then 
+            pcall(function() highlight:Destroy() end)
+        end
         highlightedPlayers[targetPlayer] = nil
     end
 end
 
 local function clearAllHighlights()
     for targetPlayer, highlight in pairs(highlightedPlayers) do
-        if highlight then highlight:Destroy() end
+        if highlight then 
+            pcall(function() highlight:Destroy() end)
+        end
     end
     highlightedPlayers = {}
 end
 
+-- ============================================================
+-- FUNGSI UI
+-- ============================================================
 local function updateToggle(toggle, knob, enabled)
     if enabled then
         TweenService:Create(toggle, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(0, 255, 100)}):Play()
@@ -248,6 +261,9 @@ local function setupToggle(toggle, knob, stateKey, onEnable, onDisable)
     end)
 end
 
+-- ============================================================
+-- INIT FUNCTION (FIXED)
+-- ============================================================
 function Feature.Init(context)
     contentFrame = context.ContentFrame
     player = context.Player
@@ -259,6 +275,7 @@ function Feature.Init(context)
     
     clearContent()
     
+    -- Create toggles
     local espLabel, espToggle, espKnob = createToggle("ESP", 10, "ESP")
     local jumpLabel, jumpToggle, jumpKnob = createToggle("JUMP HIGH", 55, "JUMP_HIGH")
     local flyLabel, flyToggle, flyKnob = createToggle("FLY", 100, "FLY")
@@ -283,99 +300,147 @@ function Feature.Init(context)
         end
     end
     
+    -- Setup ESP toggle - FIXED
     setupToggle(espToggle, espKnob, "ESP", function()
+        print("ESP ENABLED")
         local Players = game:GetService("Players")
         for _, otherPlayer in pairs(Players:GetPlayers()) do
-            if otherPlayer ~= player then addHighlight(otherPlayer) end
+            if otherPlayer ~= player then
+                task.wait(0.1)
+                addHighlight(otherPlayer)
+            end
         end
     end, function()
+        print("ESP DISABLED")
         clearAllHighlights()
     end)
     
+    -- Setup Jump toggle
     setupToggle(jumpToggle, jumpKnob, "JUMP_HIGH", function()
+        print("JUMP HIGH ENABLED")
         local character = player.Character
         if character then
             local humanoid = character:FindFirstChild("Humanoid")
-            if humanoid then humanoid.JumpPower = settings.JUMP_POWER end
+            if humanoid then 
+                humanoid.JumpPower = settings.JUMP_POWER 
+            end
         end
         refreshSliders()
     end, function()
+        print("JUMP HIGH DISABLED")
         local character = player.Character
         if character then
             local humanoid = character:FindFirstChild("Humanoid")
-            if humanoid then humanoid.JumpPower = 50 end
+            if humanoid then 
+                humanoid.JumpPower = 50 
+            end
         end
         refreshSliders()
     end)
     
+    -- Setup Fly toggle
     setupToggle(flyToggle, flyKnob, "FLY")
     
+    -- Setup Speed toggle
     setupToggle(speedToggle, speedKnob, "SPEED", function()
+        print("SPEED ENABLED")
         local character = player.Character
         if character then
             local humanoid = character:FindFirstChild("Humanoid")
-            if humanoid then humanoid.WalkSpeed = settings.WALK_SPEED end
+            if humanoid then 
+                humanoid.WalkSpeed = settings.WALK_SPEED 
+            end
         end
         refreshSliders()
     end, function()
+        print("SPEED DISABLED")
         local character = player.Character
         if character then
             local humanoid = character:FindFirstChild("Humanoid")
-            if humanoid then humanoid.WalkSpeed = 16 end
+            if humanoid then 
+                humanoid.WalkSpeed = 16 
+            end
         end
         refreshSliders()
     end)
     
     refreshSliders()
     
+    -- ============================================================
+    -- EVENT HANDLERS (FIXED)
+    -- ============================================================
     local Players = game:GetService("Players")
     
+    -- Handler untuk player baru masuk
     local function onPlayerAdded(newPlayer)
+        if newPlayer == player then return end
         if toggleStates.ESP then
-            newPlayer.CharacterAdded:Connect(function(character)
-                if toggleStates.ESP then
-                    task.wait(1)
+            local conn = newPlayer.CharacterAdded:Connect(function(character)
+                task.wait(1)
+                if toggleStates.ESP and character and character.Parent then
                     addHighlight(newPlayer)
-                end
-            end)
-        end
-    end
-    
-    local function onPlayerRemoving(leftPlayer)
-        removeHighlight(leftPlayer)
-    end
-    
-    -- Connect events
-    local conn1 = Players.PlayerAdded:Connect(onPlayerAdded)
-    local conn2 = Players.PlayerRemoving:Connect(onPlayerRemoving)
-    
-    addConnection("PLAYER", conn1)
-    addConnection("PLAYER", conn2)
-    
-    -- Player respawn handler
-    local conn3 = player.CharacterAdded:Connect(function(character)
-        local humanoid = character:WaitForChild("Humanoid")
-        if toggleStates.JUMP_HIGH then humanoid.JumpPower = settings.JUMP_POWER end
-        if toggleStates.SPEED then humanoid.WalkSpeed = settings.WALK_SPEED end
-    end)
-    addConnection("PLAYER", conn3)
-    
-    -- Other players respawn
-    for _, existingPlayer in pairs(Players:GetPlayers()) do
-        if existingPlayer ~= player then
-            local conn = existingPlayer.CharacterAdded:Connect(function(character)
-                if toggleStates.ESP then
-                    task.wait(0.5)
-                    removeHighlight(existingPlayer)
-                    addHighlight(existingPlayer)
                 end
             end)
             addConnection("PLAYER", conn)
         end
     end
+    
+    -- Handler untuk player keluar
+    local function onPlayerRemoving(leftPlayer)
+        removeHighlight(leftPlayer)
+    end
+    
+    -- Handler untuk respawn player sendiri
+    local function onCharacterAdded(character)
+        local humanoid = character:WaitForChild("Humanoid")
+        if toggleStates.JUMP_HIGH then 
+            humanoid.JumpPower = settings.JUMP_POWER 
+        end
+        if toggleStates.SPEED then 
+            humanoid.WalkSpeed = settings.WALK_SPEED 
+        end
+    end
+    
+    -- Handler untuk respawn player lain
+    local function onOtherCharacterAdded(existingPlayer)
+        return function(character)
+            task.wait(0.5)
+            if toggleStates.ESP and character and character.Parent then
+                removeHighlight(existingPlayer)
+                addHighlight(existingPlayer)
+            end
+        end
+    end
+    
+    -- Register events
+    local conn1 = Players.PlayerAdded:Connect(onPlayerAdded)
+    local conn2 = Players.PlayerRemoving:Connect(onPlayerRemoving)
+    local conn3 = player.CharacterAdded:Connect(onCharacterAdded)
+    
+    addConnection("PLAYER", conn1)
+    addConnection("PLAYER", conn2)
+    addConnection("PLAYER", conn3)
+    
+    -- Register untuk player lain yang sudah ada
+    for _, existingPlayer in pairs(Players:GetPlayers()) do
+        if existingPlayer ~= player then
+            local conn = existingPlayer.CharacterAdded:Connect(onOtherCharacterAdded(existingPlayer))
+            addConnection("PLAYER", conn)
+            
+            -- Apply highlight jika ESP already ON
+            if toggleStates.ESP then
+                task.wait(0.2)
+                addHighlight(existingPlayer)
+            end
+        end
+    end
 end
 
+-- ============================================================
+-- DESTROY FUNCTION
+-- ============================================================
 function Feature.Destroy()
+    print("PLAYER FEATURE DESTROYED")
     clearAllHighlights()
     if contentFrame then
         for _, child in pairs(contentFrame:GetChildren()) do
