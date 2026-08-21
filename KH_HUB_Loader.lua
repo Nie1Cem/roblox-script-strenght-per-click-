@@ -8,7 +8,7 @@ local TweenService = game:GetService("TweenService")
 -- KONFIGURASI URL SCRIPT
 -- ============================================================
 local Scripts = {
-    PLAYER = "PLAYER_URL",          -- Ganti dengan URL sebenar
+    PLAYER = "https://raw.githubusercontent.com/Nie1Cem/roblox-script-strenght-per-click-/refs/heads/main/PlayerFeature.lua",          -- Ganti dengan URL sebenar
     AUTO_CLICKER = "AUTO_CLICKER_URL", -- Ganti dengan URL sebenar
     STATUS = "STATUS_URL"           -- Ganti dengan URL sebenar
 }
