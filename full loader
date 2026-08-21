@@ -1,0 +1,935 @@
+-- LocalScript di dalam StarterGui
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
+local TweenService = game:GetService("TweenService")
+
+-- Membuat ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "KHHub"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
+screenGui.Parent = player:WaitForChild("PlayerGui")
+
+-- Main Frame
+local frame = Instance.new("Frame")
+frame.Name = "MainFrame"
+frame.Size = UDim2.new(0, 550, 0, 420)
+frame.Position = UDim2.new(0.5, -275, 0.5, -210)
+frame.BackgroundColor3 = Color3.fromRGB(15, 15, 20)
+frame.BackgroundTransparency = 0.15
+frame.BorderSizePixel = 0
+frame.Parent = screenGui
+
+-- UICorner untuk frame
+local frameCorner = Instance.new("UICorner")
+frameCorner.CornerRadius = UDim.new(0, 20)
+frameCorner.Parent = frame
+
+-- Drop shadow
+local shadow = Instance.new("Frame")
+shadow.Size = UDim2.new(1, 20, 1, 20)
+shadow.Position = UDim2.new(0, -10, 0, -10)
+shadow.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+shadow.BackgroundTransparency = 0.7
+shadow.BorderSizePixel = 0
+shadow.ZIndex = -1
+shadow.Parent = frame
+
+local shadowCorner = Instance.new("UICorner")
+shadowCorner.CornerRadius = UDim.new(0, 25)
+shadowCorner.Parent = shadow
+
+-- Top bar
+local topBar = Instance.new("Frame")
+topBar.Size = UDim2.new(1, 0, 0, 50)
+topBar.Position = UDim2.new(0, 0, 0, 0)
+topBar.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+topBar.BackgroundTransparency = 0.1
+topBar.BorderSizePixel = 0
+topBar.Parent = frame
+
+local topBarCorner = Instance.new("UICorner")
+topBarCorner.CornerRadius = UDim.new(0, 20)
+topBarCorner.Parent = topBar
+
+-- Logo KH
+local logoLabel = Instance.new("TextLabel")
+logoLabel.Size = UDim2.new(0, 40, 0, 40)
+logoLabel.Position = UDim2.new(0, 15, 0, 5)
+logoLabel.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+logoLabel.BackgroundTransparency = 0.2
+logoLabel.Text = "KH"
+logoLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+logoLabel.TextSize = 20
+logoLabel.Font = Enum.Font.SourceSansBold
+logoLabel.Parent = topBar
+
+local logoCorner = Instance.new("UICorner")
+logoCorner.CornerRadius = UDim.new(0, 10)
+logoCorner.Parent = logoLabel
+
+-- Title
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Size = UDim2.new(0, 200, 0, 30)
+titleLabel.Position = UDim2.new(0, 65, 0, 10)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "KH HUB"
+titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+titleLabel.TextSize = 22
+titleLabel.Font = Enum.Font.SourceSansBold
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.Parent = topBar
+
+-- Subtitle
+local subtitleLabel = Instance.new("TextLabel")
+subtitleLabel.Size = UDim2.new(0, 200, 0, 15)
+subtitleLabel.Position = UDim2.new(0, 65, 0, 35)
+subtitleLabel.BackgroundTransparency = 1
+subtitleLabel.Text = "Premium Script Hub"
+subtitleLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+subtitleLabel.TextSize = 10
+subtitleLabel.Font = Enum.Font.SourceSans
+subtitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+subtitleLabel.Parent = topBar
+
+-- Garisan horizontal
+local divider = Instance.new("Frame")
+divider.Size = UDim2.new(1, 0, 0, 2)
+divider.Position = UDim2.new(0, 0, 0, 50)
+divider.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+divider.BackgroundTransparency = 0.3
+divider.BorderSizePixel = 0
+divider.Parent = frame
+
+-- Garisan vertical
+local verticalDivider = Instance.new("Frame")
+verticalDivider.Size = UDim2.new(0, 2, 1, -50)
+verticalDivider.Position = UDim2.new(0, 170, 0, 52)
+verticalDivider.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+verticalDivider.BackgroundTransparency = 0.5
+verticalDivider.BorderSizePixel = 0
+verticalDivider.Parent = frame
+
+-- SECTION KIRI: Tab Buttons
+local function createTabButton(text, yPosition, icon)
+    local tabButton = Instance.new("TextButton")
+    tabButton.Size = UDim2.new(0, 145, 0, 40)
+    tabButton.Position = UDim2.new(0, 12, 0, yPosition)
+    tabButton.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+    tabButton.BackgroundTransparency = 0.1
+    tabButton.Text = "  " .. icon .. "  " .. text
+    tabButton.TextColor3 = Color3.fromRGB(200, 200, 200)
+    tabButton.TextSize = 14
+    tabButton.Font = Enum.Font.SourceSansBold
+    tabButton.TextXAlignment = Enum.TextXAlignment.Left
+    tabButton.BorderSizePixel = 0
+    tabButton.AutoButtonColor = false
+    tabButton.Parent = frame
+    
+    local tabCorner = Instance.new("UICorner")
+    tabCorner.CornerRadius = UDim.new(0, 12)
+    tabCorner.Parent = tabButton
+    
+    return tabButton
+end
+
+local playerTab = createTabButton("PLAYER", 60, "👤")
+local autoClickerTab = createTabButton("AUTO CLICKER", 108, "🖱️")
+local statusTab = createTabButton("STATUS", 156, "📊")
+
+-- SECTION KANAN: Content Area
+local contentFrame = Instance.new("Frame")
+contentFrame.Size = UDim2.new(1, -185, 1, -70)
+contentFrame.Position = UDim2.new(0, 175, 0, 60)
+contentFrame.BackgroundTransparency = 1
+contentFrame.BorderSizePixel = 0
+contentFrame.Parent = frame
+
+-- Variabel status
+local toggleStates = {
+    ESP = false,
+    JUMP_HIGH = false,
+    FLY = false,
+    SPEED = false,
+    AUTO_CLICKER = false
+}
+
+local settings = {
+    JUMP_POWER = 100,
+    WALK_SPEED = 32,
+    CLICK_DELAY = 0.1
+}
+
+local highlightedPlayers = {}
+
+-- Keybind untuk Auto Clicker
+local autoClickerKeybind = Enum.KeyCode.C
+
+-- Fungsi highlight
+local function addHighlight(targetPlayer)
+    if not targetPlayer or targetPlayer == player then return end
+    local character = targetPlayer.Character
+    if not character then return end
+    if highlightedPlayers[targetPlayer] then
+        local oldHighlight = highlightedPlayers[targetPlayer]
+        if oldHighlight and oldHighlight.Parent then return end
+        highlightedPlayers[targetPlayer] = nil
+    end
+    local highlight = Instance.new("Highlight")
+    highlight.Name = "ESPHighlight"
+    highlight.Parent = character
+    highlight.FillColor = Color3.fromRGB(255, 0, 0)
+    highlight.OutlineColor = Color3.fromRGB(255, 255, 0)
+    highlight.FillTransparency = 0.5
+    highlight.OutlineTransparency = 0
+    highlightedPlayers[targetPlayer] = highlight
+end
+
+local function removeHighlight(targetPlayer)
+    if highlightedPlayers[targetPlayer] then
+        local highlight = highlightedPlayers[targetPlayer]
+        if highlight then highlight:Destroy() end
+        highlightedPlayers[targetPlayer] = nil
+    end
+end
+
+local function clearAllHighlights()
+    for targetPlayer, highlight in pairs(highlightedPlayers) do
+        if highlight then highlight:Destroy() end
+    end
+    highlightedPlayers = {}
+end
+
+-- Fungsi update toggle
+local function updateToggle(toggle, knob, enabled)
+    if enabled then
+        TweenService:Create(toggle, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(0, 255, 100)}):Play()
+        TweenService:Create(knob, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0, 30, 0, 3)}):Play()
+    else
+        TweenService:Create(toggle, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {BackgroundColor3 = Color3.fromRGB(80, 80, 90)}):Play()
+        TweenService:Create(knob, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0, 3, 0, 3)}):Play()
+    end
+end
+
+local function clearContent()
+    for _, child in pairs(contentFrame:GetChildren()) do
+        child:Destroy()
+    end
+end
+
+-- Fungsi buat toggle
+local function createToggle(text, yPosition, stateKey, parent)
+    local toggleContainer = Instance.new("Frame")
+    toggleContainer.Size = UDim2.new(1, -20, 0, 40)
+    toggleContainer.Position = UDim2.new(0, 10, 0, yPosition)
+    toggleContainer.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    toggleContainer.BackgroundTransparency = 0.3
+    toggleContainer.BorderSizePixel = 0
+    toggleContainer.Parent = parent
+    
+    local containerCorner = Instance.new("UICorner")
+    containerCorner.CornerRadius = UDim.new(0, 10)
+    containerCorner.Parent = toggleContainer
+    
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(0, 150, 0, 35)
+    label.Position = UDim2.new(0, 15, 0, 2)
+    label.BackgroundTransparency = 1
+    label.Text = text
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextSize = 15
+    label.Font = Enum.Font.SourceSansBold
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = toggleContainer
+    
+    local toggle = Instance.new("TextButton")
+    toggle.Size = UDim2.new(0, 55, 0, 28)
+    toggle.Position = UDim2.new(1, -65, 0, 6)
+    toggle.BackgroundColor3 = Color3.fromRGB(80, 80, 90)
+    toggle.Text = ""
+    toggle.BorderSizePixel = 0
+    toggle.AutoButtonColor = false
+    toggle.Parent = toggleContainer
+    
+    local toggleCorner = Instance.new("UICorner")
+    toggleCorner.CornerRadius = UDim.new(1, 0)
+    toggleCorner.Parent = toggle
+    
+    local knob = Instance.new("Frame")
+    knob.Size = UDim2.new(0, 22, 0, 22)
+    knob.Position = UDim2.new(0, 3, 0, 3)
+    knob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    knob.BorderSizePixel = 0
+    knob.Parent = toggle
+    
+    local knobCorner = Instance.new("UICorner")
+    knobCorner.CornerRadius = UDim.new(1, 0)
+    knobCorner.Parent = knob
+    
+    updateToggle(toggle, knob, toggleStates[stateKey])
+    
+    return label, toggle, knob, toggleContainer
+end
+
+-- Fungsi buat slider
+local function createSlider(text, yPosition, minValue, maxValue, defaultValue, parent, stateKey)
+    local settingFrame = Instance.new("Frame")
+    settingFrame.Size = UDim2.new(1, -20, 0, 70)
+    settingFrame.Position = UDim2.new(0, 10, 0, yPosition)
+    settingFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    settingFrame.BackgroundTransparency = 0.3
+    settingFrame.BorderSizePixel = 0
+    settingFrame.Parent = parent
+    
+    local settingCorner = Instance.new("UICorner")
+    settingCorner.CornerRadius = UDim.new(0, 10)
+    settingCorner.Parent = settingFrame
+    
+    local settingLabel = Instance.new("TextLabel")
+    settingLabel.Size = UDim2.new(1, -20, 0, 25)
+    settingLabel.Position = UDim2.new(0, 10, 0, 5)
+    settingLabel.BackgroundTransparency = 1
+    settingLabel.Text = text .. ": " .. defaultValue
+    settingLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    settingLabel.TextSize = 13
+    settingLabel.Font = Enum.Font.SourceSansBold
+    settingLabel.TextXAlignment = Enum.TextXAlignment.Left
+    settingLabel.Parent = settingFrame
+    
+    local sliderButton = Instance.new("TextButton")
+    sliderButton.Size = UDim2.new(1, -20, 0, 25)
+    sliderButton.Position = UDim2.new(0, 10, 0, 35)
+    sliderButton.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
+    sliderButton.Text = ""
+    sliderButton.BorderSizePixel = 0
+    sliderButton.AutoButtonColor = false
+    sliderButton.Parent = settingFrame
+    
+    local sliderCorner = Instance.new("UICorner")
+    sliderCorner.CornerRadius = UDim.new(1, 0)
+    sliderCorner.Parent = sliderButton
+    
+    local fillPercentage = (defaultValue - minValue) / (maxValue - minValue)
+    local sliderFill = Instance.new("Frame")
+    sliderFill.Size = UDim2.new(fillPercentage, 0, 1, 0)
+    sliderFill.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+    sliderFill.BorderSizePixel = 0
+    sliderFill.Parent = sliderButton
+    
+    local fillCorner = Instance.new("UICorner")
+    fillCorner.CornerRadius = UDim.new(1, 0)
+    fillCorner.Parent = sliderFill
+    
+    local sliderKnob = Instance.new("Frame")
+    sliderKnob.Size = UDim2.new(0, 19, 0, 19)
+    sliderKnob.Position = UDim2.new(fillPercentage, -9, 0, 3)
+    sliderKnob.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    sliderKnob.BorderSizePixel = 0
+    sliderKnob.Parent = sliderButton
+    
+    local knobCorner = Instance.new("UICorner")
+    knobCorner.CornerRadius = UDim.new(1, 0)
+    knobCorner.Parent = sliderKnob
+    
+    local function updateSlider()
+        local mousePos = UserInputService:GetMouseLocation()
+        local sliderPos = sliderButton.AbsolutePosition
+        local sliderSize = sliderButton.AbsoluteSize
+        
+        local relativeX = math.clamp(mousePos.X - sliderPos.X, 0, sliderSize.X)
+        local percentage = relativeX / sliderSize.X
+        
+        local value = math.floor(minValue + (maxValue - minValue) * percentage)
+        
+        sliderFill.Size = UDim2.new(percentage, 0, 1, 0)
+        sliderKnob.Position = UDim2.new(percentage, -9, 0, 3)
+        settingLabel.Text = text .. ": " .. value
+        
+        if stateKey == "JUMP_POWER" then
+            settings.JUMP_POWER = value
+            if toggleStates.JUMP_HIGH then
+                local character = player.Character
+                if character then
+                    local humanoid = character:FindFirstChild("Humanoid")
+                    if humanoid then humanoid.JumpPower = value end
+                end
+            end
+        elseif stateKey == "WALK_SPEED" then
+            settings.WALK_SPEED = value
+            if toggleStates.SPEED then
+                local character = player.Character
+                if character then
+                    local humanoid = character:FindFirstChild("Humanoid")
+                    if humanoid then humanoid.WalkSpeed = value end
+                end
+            end
+        elseif stateKey == "CLICK_DELAY" then
+            settings.CLICK_DELAY = value / 1000
+        end
+    end
+    
+    local isDragging = false
+    
+    sliderButton.MouseButton1Down:Connect(function()
+        isDragging = true
+        updateSlider()
+    end)
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if isDragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            updateSlider()
+        end
+    end)
+    
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            isDragging = false
+        end
+    end)
+    
+    return settingFrame
+end
+
+-- Fungsi setup toggle
+local function setupToggle(toggle, knob, stateKey, onEnable, onDisable)
+    toggle.MouseButton1Click:Connect(function()
+        toggleStates[stateKey] = not toggleStates[stateKey]
+        local enabled = toggleStates[stateKey]
+        
+        updateToggle(toggle, knob, enabled)
+        
+        if enabled then
+            if onEnable then onEnable() end
+        else
+            if onDisable then onDisable() end
+        end
+    end)
+end
+
+-- Fungsi update tab visual
+local function updateTabs(activeTab)
+    local tabs = {playerTab, autoClickerTab, statusTab}
+    for _, tab in pairs(tabs) do
+        if tab == activeTab then
+            tab.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+            tab.TextColor3 = Color3.fromRGB(255, 255, 255)
+        else
+            tab.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+            tab.TextColor3 = Color3.fromRGB(200, 200, 200)
+        end
+    end
+end
+
+-- Fungsi untuk cari nilai attribute/leaderstats
+local function getPlayerStat(statName)
+    local character = player.Character
+    if not character then return "N/A" end
+    
+    -- Cari dalam player
+    local stat = player:FindFirstChild(statName)
+    if stat then
+        return tostring(stat.Value or stat)
+    end
+    
+    -- Cari dalam leaderstats
+    local leaderstats = player:FindFirstChild("leaderstats")
+    if leaderstats then
+        local statValue = leaderstats:FindFirstChild(statName)
+        if statValue then
+            return tostring(statValue.Value)
+        end
+    end
+    
+    -- Cari dalam character
+    local charStat = character:FindFirstChild(statName)
+    if charStat then
+        return tostring(charStat.Value or charStat)
+    end
+    
+    -- Cari attribute
+    local attr = player:GetAttribute(statName)
+    if attr then
+        return tostring(attr)
+    end
+    
+    return "N/A"
+end
+
+-- Fungsi tampil PLAYER tab
+local function showPlayerTab()
+    clearContent()
+    updateTabs(playerTab)
+    
+    local espLabel, espToggle, espKnob = createToggle("ESP", 10, "ESP", contentFrame)
+    local jumpLabel, jumpToggle, jumpKnob = createToggle("JUMP HIGH", 55, "JUMP_HIGH", contentFrame)
+    local flyLabel, flyToggle, flyKnob = createToggle("FLY", 100, "FLY", contentFrame)
+    local speedLabel, speedToggle, speedKnob = createToggle("SPEED", 145, "SPEED", contentFrame)
+    
+    local jumpSlider = nil
+    local speedSlider = nil
+    
+    local function refreshSliders()
+        if jumpSlider then jumpSlider:Destroy() end
+        if speedSlider then speedSlider:Destroy() end
+        
+        local currentY = 190
+        
+        if toggleStates.JUMP_HIGH then
+            jumpSlider = createSlider("JUMP POWER", currentY, 50, 200, settings.JUMP_POWER, contentFrame, "JUMP_POWER")
+            currentY = currentY + 75
+        end
+        
+        if toggleStates.SPEED then
+            speedSlider = createSlider("WALK SPEED", currentY, 16, 100, settings.WALK_SPEED, contentFrame, "WALK_SPEED")
+        end
+    end
+    
+    setupToggle(espToggle, espKnob, "ESP", function()
+        for _, otherPlayer in pairs(Players:GetPlayers()) do
+            if otherPlayer ~= player then addHighlight(otherPlayer) end
+        end
+    end, function()
+        clearAllHighlights()
+    end)
+    
+    setupToggle(jumpToggle, jumpKnob, "JUMP_HIGH", function()
+        local character = player.Character
+        if character then
+            local humanoid = character:FindFirstChild("Humanoid")
+            if humanoid then humanoid.JumpPower = settings.JUMP_POWER end
+        end
+        refreshSliders()
+    end, function()
+        local character = player.Character
+        if character then
+            local humanoid = character:FindFirstChild("Humanoid")
+            if humanoid then humanoid.JumpPower = 50 end
+        end
+        refreshSliders()
+    end)
+    
+    setupToggle(flyToggle, flyKnob, "FLY")
+    
+    setupToggle(speedToggle, speedKnob, "SPEED", function()
+        local character = player.Character
+        if character then
+            local humanoid = character:FindFirstChild("Humanoid")
+            if humanoid then humanoid.WalkSpeed = settings.WALK_SPEED end
+        end
+        refreshSliders()
+    end, function()
+        local character = player.Character
+        if character then
+            local humanoid = character:FindFirstChild("Humanoid")
+            if humanoid then humanoid.WalkSpeed = 16 end
+        end
+        refreshSliders()
+    end)
+    
+    refreshSliders()
+end
+
+-- Fungsi tampil AUTO CLICKER tab
+local function showAutoClickerTab()
+    clearContent()
+    updateTabs(autoClickerTab)
+    
+    local autoClickerLabel, autoClickerToggle, autoClickerKnob = createToggle("AUTO CLICKER", 10, "AUTO_CLICKER", contentFrame)
+    
+    local keybindContainer = Instance.new("Frame")
+    keybindContainer.Size = UDim2.new(1, -20, 0, 40)
+    keybindContainer.Position = UDim2.new(0, 10, 0, 55)
+    keybindContainer.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+    keybindContainer.BackgroundTransparency = 0.3
+    keybindContainer.BorderSizePixel = 0
+    keybindContainer.Parent = contentFrame
+    
+    local keybindCorner = Instance.new("UICorner")
+    keybindCorner.CornerRadius = UDim.new(0, 10)
+    keybindCorner.Parent = keybindContainer
+    
+    local keybindLabel = Instance.new("TextLabel")
+    keybindLabel.Size = UDim2.new(0, 150, 0, 35)
+    keybindLabel.Position = UDim2.new(0, 15, 0, 2)
+    keybindLabel.BackgroundTransparency = 1
+    keybindLabel.Text = "KEYBIND"
+    keybindLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    keybindLabel.TextSize = 15
+    keybindLabel.Font = Enum.Font.SourceSansBold
+    keybindLabel.TextXAlignment = Enum.TextXAlignment.Left
+    keybindLabel.Parent = keybindContainer
+    
+    local keybindButton = Instance.new("TextButton")
+    keybindButton.Size = UDim2.new(0, 80, 0, 30)
+    keybindButton.Position = UDim2.new(1, -90, 0, 5)
+    keybindButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+    keybindButton.BackgroundTransparency = 0.3
+    keybindButton.Text = autoClickerKeybind.Name
+    keybindButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    keybindButton.TextSize = 14
+    keybindButton.Font = Enum.Font.SourceSansBold
+    keybindButton.BorderSizePixel = 0
+    keybindButton.AutoButtonColor = false
+    keybindButton.Parent = keybindContainer
+    
+    local keybindButtonCorner = Instance.new("UICorner")
+    keybindButtonCorner.CornerRadius = UDim.new(0, 8)
+    keybindButtonCorner.Parent = keybindButton
+    
+    local statusLabel = Instance.new("TextLabel")
+    statusLabel.Size = UDim2.new(1, -20, 0, 30)
+    statusLabel.Position = UDim2.new(0, 10, 0, 100)
+    statusLabel.BackgroundTransparency = 1
+    statusLabel.Text = "Status: OFF"
+    statusLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+    statusLabel.TextSize = 13
+    statusLabel.Font = Enum.Font.SourceSans
+    statusLabel.TextXAlignment = Enum.TextXAlignment.Left
+    statusLabel.Parent = contentFrame
+    
+    local clickDelaySlider = nil
+    
+    local function refreshSlider()
+        if clickDelaySlider then clickDelaySlider:Destroy() end
+        
+        if toggleStates.AUTO_CLICKER then
+            clickDelaySlider = createSlider("CLICK DELAY (ms)", 135, 50, 1000, settings.CLICK_DELAY * 1000, contentFrame, "CLICK_DELAY")
+        end
+    end
+    
+    local function updateStatus()
+        if toggleStates.AUTO_CLICKER then
+            statusLabel.Text = "Status: ON (Keybind: " .. autoClickerKeybind.Name .. ")"
+            statusLabel.TextColor3 = Color3.fromRGB(0, 255, 100)
+        else
+            statusLabel.Text = "Status: OFF (Keybind: " .. autoClickerKeybind.Name .. ")"
+            statusLabel.TextColor3 = Color3.fromRGB(150, 150, 150)
+        end
+    end
+    
+    setupToggle(autoClickerToggle, autoClickerKnob, "AUTO_CLICKER", function()
+        refreshSlider()
+        updateStatus()
+    end, function()
+        refreshSlider()
+        updateStatus()
+    end)
+    
+    keybindButton.MouseButton1Click:Connect(function()
+        keybindButton.Text = "TEKAN..."
+        
+        local connection
+        connection = UserInputService.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.Keyboard then
+                autoClickerKeybind = input.KeyCode
+                keybindButton.Text = autoClickerKeybind.Name
+                connection:Disconnect()
+                updateStatus()
+            end
+        end)
+    end)
+    
+    refreshSlider()
+    updateStatus()
+end
+
+-- Fungsi tampil STATUS tab
+local function showStatusTab()
+    clearContent()
+    updateTabs(statusTab)
+    
+    -- Title
+    local statusTitle = Instance.new("TextLabel")
+    statusTitle.Size = UDim2.new(1, -20, 0, 40)
+    statusTitle.Position = UDim2.new(0, 10, 0, 10)
+    statusTitle.BackgroundTransparency = 1
+    statusTitle.Text = "📊 PLAYER STATUS"
+    statusTitle.TextColor3 = Color3.fromRGB(0, 170, 255)
+    statusTitle.TextSize = 20
+    statusTitle.Font = Enum.Font.SourceSansBold
+    statusTitle.TextXAlignment = Enum.TextXAlignment.Center
+    statusTitle.Parent = contentFrame
+    
+    -- Function untuk buat status row
+    local function createStatusRow(label, yPosition)
+        local rowContainer = Instance.new("Frame")
+        rowContainer.Size = UDim2.new(1, -20, 0, 50)
+        rowContainer.Position = UDim2.new(0, 10, 0, yPosition)
+        rowContainer.BackgroundColor3 = Color3.fromRGB(25, 25, 35)
+        rowContainer.BackgroundTransparency = 0.3
+        rowContainer.BorderSizePixel = 0
+        rowContainer.Parent = contentFrame
+        
+        local rowCorner = Instance.new("UICorner")
+        rowCorner.CornerRadius = UDim.new(0, 10)
+        rowCorner.Parent = rowContainer
+        
+        local labelText = Instance.new("TextLabel")
+        labelText.Size = UDim2.new(0, 120, 0, 40)
+        labelText.Position = UDim2.new(0, 15, 0, 5)
+        labelText.BackgroundTransparency = 1
+        labelText.Text = label
+        labelText.TextColor3 = Color3.fromRGB(200, 200, 200)
+        labelText.TextSize = 15
+        labelText.Font = Enum.Font.SourceSansBold
+        labelText.TextXAlignment = Enum.TextXAlignment.Left
+        labelText.Parent = rowContainer
+        
+        local valueText = Instance.new("TextLabel")
+        valueText.Size = UDim2.new(0, 150, 0, 40)
+        valueText.Position = UDim2.new(1, -165, 0, 5)
+        valueText.BackgroundTransparency = 1
+        valueText.Text = "Loading..."
+        valueText.TextColor3 = Color3.fromRGB(255, 255, 255)
+        valueText.TextSize = 16
+        valueText.Font = Enum.Font.SourceSansBold
+        valueText.TextXAlignment = Enum.TextXAlignment.Right
+        valueText.Parent = rowContainer
+        
+        return rowContainer, valueText
+    end
+    
+    -- Buat rows untuk setiap stat
+    local rebirthRow, rebirthValue = createStatusRow("🔄 REBIRTH", 60)
+    local strengthRow, strengthValue = createStatusRow("💪 STRENGTH", 115)
+    local levelRow, levelValue = createStatusRow("⭐ LEVEL", 170)
+    local winsRow, winsValue = createStatusRow("🏆 WINS", 225)
+    
+    -- Function untuk update semua nilai
+    local function updateStats()
+        rebirthValue.Text = getPlayerStat("Rebirth") or getPlayerStat("Rebirths") or getPlayerStat("RebirthCount")
+        strengthValue.Text = getPlayerStat("Strength") or getPlayerStat("STR")
+        levelValue.Text = getPlayerStat("Level") or getPlayerStat("LVL") or getPlayerStat("LV")
+        winsValue.Text = getPlayerStat("Wins") or getPlayerStat("Win") or getPlayerStat("WinCount")
+    end
+    
+    -- Update stats setiap saat
+    spawn(function()
+        while true do
+            updateStats()
+            wait(1)
+        end
+    end)
+    
+    -- Update immediately
+    updateStats()
+end
+
+-- Tab click functions
+playerTab.MouseButton1Click:Connect(showPlayerTab)
+autoClickerTab.MouseButton1Click:Connect(showAutoClickerTab)
+statusTab.MouseButton1Click:Connect(showStatusTab)
+
+showPlayerTab()
+
+-- Auto Clicker Loop
+spawn(function()
+    while true do
+        if toggleStates.AUTO_CLICKER then
+            pcall(function()
+                local mouse = player:GetMouse()
+                mouse1click()
+            end)
+        end
+        wait(settings.CLICK_DELAY)
+    end
+end)
+
+-- Keybind untuk Auto Clicker
+UserInputService.InputBegan:Connect(function(input)
+    if input.KeyCode == autoClickerKeybind then
+        toggleStates.AUTO_CLICKER = not toggleStates.AUTO_CLICKER
+        print("Auto Clicker: " .. (toggleStates.AUTO_CLICKER and "ON" or "OFF"))
+    end
+    
+    if toggleStates.FLY and input.KeyCode == Enum.KeyCode.Space then
+        local character = player.Character
+        if character then
+            local humanoid = character:FindFirstChild("Humanoid")
+            local rootPart = character:FindFirstChild("HumanoidRootPart")
+            if humanoid and rootPart then
+                humanoid.Sit = false
+                rootPart.Velocity = Vector3.new(0, 50, 0)
+            end
+        end
+    end
+end)
+
+-- Update jump power dan speed ketika respawn
+player.CharacterAdded:Connect(function(character)
+    local humanoid = character:WaitForChild("Humanoid")
+    if toggleStates.JUMP_HIGH then humanoid.JumpPower = settings.JUMP_POWER end
+    if toggleStates.SPEED then humanoid.WalkSpeed = settings.WALK_SPEED end
+end)
+
+-- Event player baru
+Players.PlayerAdded:Connect(function(newPlayer)
+    if toggleStates.ESP then
+        newPlayer.CharacterAdded:Connect(function(character)
+            if toggleStates.ESP then
+                wait(1)
+                addHighlight(newPlayer)
+            end
+        end)
+    end
+end)
+
+-- Event player keluar
+Players.PlayerRemoving:Connect(function(leftPlayer)
+    removeHighlight(leftPlayer)
+end)
+
+-- Event respawn player lain
+for _, existingPlayer in pairs(Players:GetPlayers()) do
+    if existingPlayer ~= player then
+        existingPlayer.CharacterAdded:Connect(function(character)
+            if toggleStates.ESP then
+                wait(0.5)
+                removeHighlight(existingPlayer)
+                addHighlight(existingPlayer)
+            end
+        end)
+    end
+end
+
+-- AREA DRAG (bahagian atas)
+local dragArea = Instance.new("TextButton")
+dragArea.Size = UDim2.new(1, -80, 0, 50)
+dragArea.Position = UDim2.new(0, 0, 0, 0)
+dragArea.BackgroundTransparency = 1
+dragArea.Text = ""
+dragArea.AutoButtonColor = false
+dragArea.BorderSizePixel = 0
+dragArea.ZIndex = 10
+dragArea.Parent = frame
+
+local frameDragging = false
+local frameDragStart = nil
+local frameStartPos = nil
+
+dragArea.MouseButton1Down:Connect(function()
+    frameDragging = true
+    frameDragStart = Vector2.new(frame.Position.X.Offset, frame.Position.Y.Offset)
+    frameStartPos = UserInputService:GetMouseLocation()
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if frameDragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local currentPos = UserInputService:GetMouseLocation()
+        local delta = currentPos - frameStartPos
+        frame.Position = UDim2.new(0, frameDragStart.X + delta.X, 0, frameDragStart.Y + delta.Y)
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        frameDragging = false
+    end
+end)
+
+-- BULATAN MERAH (Close)
+local closeButton = Instance.new("TextButton")
+closeButton.Name = "CloseButton"
+closeButton.Size = UDim2.new(0, 25, 0, 25)
+closeButton.Position = UDim2.new(1, -30, 0, 12)
+closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+closeButton.BackgroundTransparency = 0
+closeButton.Text = ""
+closeButton.BorderSizePixel = 0
+closeButton.AutoButtonColor = false
+closeButton.ZIndex = 20
+closeButton.Parent = frame
+
+local closeCorner = Instance.new("UICorner")
+closeCorner.CornerRadius = UDim.new(1, 0)
+closeCorner.Parent = closeButton
+
+-- BULATAN KUNING (Minimize)
+local minimizeButton = Instance.new("TextButton")
+minimizeButton.Name = "MinimizeButton"
+minimizeButton.Size = UDim2.new(0, 25, 0, 25)
+minimizeButton.Position = UDim2.new(1, -60, 0, 12)
+minimizeButton.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+minimizeButton.BackgroundTransparency = 0
+minimizeButton.Text = ""
+minimizeButton.BorderSizePixel = 0
+minimizeButton.AutoButtonColor = false
+minimizeButton.ZIndex = 20
+minimizeButton.Parent = frame
+
+local minimizeCorner = Instance.new("UICorner")
+minimizeCorner.CornerRadius = UDim.new(1, 0)
+minimizeCorner.Parent = minimizeButton
+
+-- Icon KH (bulat)
+local iconButton = Instance.new("TextButton")
+iconButton.Name = "KHIcon"
+iconButton.Size = UDim2.new(0, 55, 0, 55)
+iconButton.Position = UDim2.new(0, 10, 0, 10)
+iconButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+iconButton.BackgroundTransparency = 0.2
+iconButton.Text = "KH"
+iconButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+iconButton.TextSize = 22
+iconButton.Font = Enum.Font.SourceSansBold
+iconButton.BorderSizePixel = 0
+iconButton.Visible = false
+iconButton.ZIndex = 20
+iconButton.Parent = screenGui
+
+local iconCorner = Instance.new("UICorner")
+iconCorner.CornerRadius = UDim.new(1, 0)
+iconCorner.Parent = iconButton
+
+-- Drag icon
+local iconDragging = false
+local iconDragStart = nil
+local iconStartPos = nil
+
+iconButton.MouseButton1Down:Connect(function()
+    iconDragging = true
+    iconDragStart = Vector2.new(iconButton.Position.X.Offset, iconButton.Position.Y.Offset)
+    iconStartPos = UserInputService:GetMouseLocation()
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if iconDragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+        local currentPos = UserInputService:GetMouseLocation()
+        local delta = currentPos - iconStartPos
+        iconButton.Position = UDim2.new(0, iconDragStart.X + delta.X, 0, iconDragStart.Y + delta.Y)
+    end
+end)
+
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        iconDragging = false
+    end
+end)
+
+-- MINIMIZE FUNCTION
+minimizeButton.MouseButton1Click:Connect(function()
+    frame.Visible = false
+    iconButton.Visible = true
+    iconButton.Position = UDim2.new(0, 10, 0, 10)
+end)
+
+-- OPEN FUNCTION
+iconButton.MouseButton1Click:Connect(function()
+    iconButton.Visible = false
+    frame.Visible = true
+end)
+
+-- CLOSE FUNCTION
+closeButton.MouseButton1Click:Connect(function()
+    clearAllHighlights()
+    local character = player.Character
+    if character then
+        local humanoid = character:FindFirstChild("Humanoid")
+        if humanoid then
+            humanoid.JumpPower = 50
+            humanoid.WalkSpeed = 16
+        end
+    end
+    screenGui:Destroy()
+end)
