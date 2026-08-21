@@ -10,7 +10,7 @@ local TweenService = game:GetService("TweenService")
 local Scripts = {
     PLAYER = "https://raw.githubusercontent.com/Nie1Cem/roblox-script-strenght-per-click-/refs/heads/main/PlayerFeature.lua",          -- Ganti dengan URL sebenar
     AUTO_CLICKER = "https://raw.githubusercontent.com/Nie1Cem/roblox-script-strenght-per-click-/refs/heads/main/AutoClickerFeature.lua", -- Ganti dengan URL sebenar
-    STATUS = "STATUS_URL"           -- Ganti dengan URL sebenar
+    STATUS = "https://raw.githubusercontent.com/Nie1Cem/roblox-script-strenght-per-click-/3e54c379da5e0e4796b3d72239bf0363e6651d9f/StatusFeature.lua"           -- Ganti dengan URL sebenar
 }
 
 -- ============================================================
